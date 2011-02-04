@@ -1,0 +1,69 @@
+How to invoke my program: ./rt scriptName.lua from within #/data
+Where scriptName takes the name of one of the supplied scripts in the data directory. For convenience pre-rendered files have been placed and the file names are prefixed with the script name.
+
+How to use my extra feature: There are a few extra features that can all be controlled through extensions to the lua scene script format that was supplied to us. The following are script commands that will chance the rendering behaviour. These are all called by prefixing the command name with gr.
+
+material(texture, {specR, specG, specB}, phongCoeff)
+ - The material command was modified to take a texture as the first parameter instead of a colour. This allows solid colour textures, procedural textures, or file based textures etc. to be used.
+
+rtMaterial(texture, {specR, specG, specB}, phongCoeff, reflectivity, opacity, indexOfRefraction)
+ - Creates a reflective/transmissive material with the desired parameters.
+
+constantTexture(colour)
+ - Creates a solid colour texture.
+
+uvTexture()
+ - Maps (u,v) -> Colour(u,v,0). Useful for debugging.
+
+checkerTexture(textureA, textureB, frequency)
+ - Checkerboard texture alternative between textureA and textureB.
+
+imageTexture(image)
+ - Uses an image for colour look up.
+
+setBumpMap(material, texture)
+ - sets the bump map of the given material to any arbitrary texture
+
+cylinder('name', {x,y,z}, radius, height)
+cone('name', {x,y,z}, radius, height)
+paraboloid('name', {x,y,z}, radius, height)
+ - Self explanatory; creates the desired primitive.
+
+union('name', nodeA, nodeB)
+intersection('name', nodeA, nodeB)
+difference('name', nodeA, nodeB)
+ - Creates constructive solid geometry nodes that can be added to a a scene hierarchy.
+
+ - Various flags to control rendering
+enableBoundsChecking()
+disableBoundsChecking()
+ - Toggles the use of a modified KD-tree style acceleration structure.
+
+enableStratifiedSampling(numStrata) 1 .. 256;
+disableStratifiedSampling() <==> enableStratifiedSampling(1)
+ - Toggles pixel super sampling. Pixels are stratified and sampled the same amount in both x and y directions.
+
+enabledJitteredSampling()
+disableJitteredSampling()
+ - Jitters the samples can and should be combined with stratified sampling with strata >= 2
+
+enableDepthOfField(lensRadius, focalDistance)
+diableDepthOfField() <==> enableDepthOfField(0, x)
+- Enables depth of field by simulating a camera with a simple spherical glass lens with the given radius and focal distance. The sampling of the lens is controlled by the same number of strata and jittering parameters as the pixel sampling although new/distinct samples are generated for the lens.
+
+
+There are several simple scenes that each demonstrate a particular capability in the data directory. Each script describes what it aims to demonstrate although the names are fairly self explanatory. Pre-rendered files have been provided for convenience.
+
+
+Naming conventions of rendered images:
+Name-WIDTHxHEIGHT-rederingCode.png
+
+The rendering code is helpful to determine what features of the ray tracer of importance were turned on.
+
+sx - Stratified sampling with x strata
+j - Jittered sampling
+rx - Max number of ray recursions
+f_x - The fstop (f/x) measured like it would be for a traditional camera (f/N -> N = focalDist/lensRadius). The larger the value of x the larger the circle of confusion.
+reference - A high resolution reference image.
+
+Beyond the script-controllable preferences the ray tracer will also output summary statistics of each render. As mentioned earlier a modified KD-tree acceleration structure was implemented to reduce the number of intersection tests considerably. In some cases the implementation performs better than a KD-tree in other cases it performs worse. Also as can be demonstrated by reflection.lua and the accompanying rendered images my ray tracer also supports reflection.
