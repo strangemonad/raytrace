@@ -1,3 +1,9 @@
+# Post-Note:
+
+9/2019 This ray tracer was part of my computer graphics final project. The c++ style used is now heavily dated and the repo is kep here mainly for reference.
+
+# Description
+
 How to invoke my program: ./rt scriptName.lua from within #/data
 Where scriptName takes the name of one of the supplied scripts in the data directory. For convenience pre-rendered files have been placed and the file names are prefixed with the script name.
 
